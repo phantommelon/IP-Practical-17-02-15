@@ -22,7 +22,7 @@ import java.util.Scanner;
  * Initiates and runs the CompanyScenario based on user input.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.0
+ * @version 1.1
  */
 public class Main {
     
@@ -30,8 +30,6 @@ public class Main {
     
     public Main() {
         commands.add(new Command("exit"));
-        ArrayList<String> addSubCommands = new ArrayList<>();
-        addSubCommands.add("company");
     }
     
     public static void main(String[] args) {
