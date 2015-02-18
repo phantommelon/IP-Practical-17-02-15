@@ -16,7 +16,6 @@
  */
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -27,10 +26,10 @@ import java.util.Scanner;
  */
 public class Main {
     
-    private HashMap<String, ArrayList<String>> commands;
+    private ArrayList<Command> commands;
     
     public Main() {
-        String command = "add";
+        commands.add(new Command("exit"));
         ArrayList<String> addSubCommands = new ArrayList<>();
         addSubCommands.add("company");
     }
@@ -43,7 +42,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
             while(scanner.hasNext()) {
                 String token = scanner.next();
-                if(main.commands.containsKey(token)) {
+                if(scanner.hasNext()) {
                     
                 }
             }
