@@ -16,6 +16,8 @@
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Contains a command and it's help information.
@@ -27,21 +29,23 @@ import java.util.ArrayList;
 public class Command {
     
     //All commands will be lower case.
-    private String command;
-    private ArrayList<Command> subCommands = new ArrayList<>();
+    private String commandName;
+    private Map<String, Command> subCommands = new HashMap<>();
     
-    public Command(String command) {
-        this.command = command;
+    public Command(String commandName) {
+        this.commandName = commandName;
     }
     
-    public Command(String command, Command subCommand) {
-        this.command = command;
-        subCommands.add(subCommand);
+    public Command(String commandName, Command subCommand) {
+        this.commandName = commandName;
+        subCommands.put(subCommand.getName(), subCommand);
     }
     
-    public Command(String command, ArrayList<Command> subCommands) {
-        this.command = command;
-        subCommands.addAll(subCommands);
+    public Command(String commandName, ArrayList<Command> subCommands) {
+        this.commandName = commandName;
+        for(Command subCommand : subCommands) {
+            this.subCommands.put(subCommand.getName(), subCommand);
+        }
     }
     
     public boolean isFinal() {
@@ -54,13 +58,24 @@ public class Command {
     }
     
     public Command getCommand(String commandName) {
-        for(Command command : subCommands) {
-            if(command.command.equals(commandName)) {
-                return command;
-            }
+        return subCommands.get(commandName);
+    }
+    
+    public String getName() {
+        return commandName;
+    }
+    
+    public Map<String, Command> getSubCommands() {
+        return subCommands;
+    }
+
+    public void execute() {
+        if(!subCommands.isEmpty()) {
+            System.out.print(commandName + " has subcommands " + subCommands.keySet());
+            System.out.println();
         }
-        
-        //Maybe not the best?
-        return null;
+        else {
+            System.out.println("This command has not been implemented yet.");
+        }
     }
 }

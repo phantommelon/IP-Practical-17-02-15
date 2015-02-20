@@ -15,8 +15,16 @@
  * limitations under the License.
  */
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 /**
  * Initiates and runs the CompanyScenario based on user input.
@@ -26,24 +34,53 @@ import java.util.Scanner;
  */
 public class Main {
     
-    private ArrayList<Command> commands;
+    private Map<String, Command> commands;
     
     public Main() {
-        commands.add(new Command("exit"));
+        commands = new HashMap<>();
+        //use class name in future
+        commands.put("help", new Command("help"));
     }
     
-    public static void main(String[] args) {
+    private void processCommand(List<String> userInput, Map<String, Command> commands) throws InvalidCommandException {
+        
+        Command command = commands.get(userInput.get(0));
+        
+        if(command == null) {
+            throw new InvalidCommandException();
+        }
+        
+        else if(userInput.size() == 1) {
+            command.execute();
+        }
+        
+        else {
+            userInput.remove(0);
+            processCommand(userInput, command.getSubCommands());
+        }
+        
+    }
+    
+    public static void main(String[] args) throws InvalidCommandException {
         
         Main main = new Main();
         System.out.println("Company Scenario V1.0 - Please enter a valid command: \n" );
         
-        Scanner scanner = new Scanner(System.in);
-            while(scanner.hasNext()) {
-                String token = scanner.next();
-                if(scanner.hasNext()) {
-                    
-                }
+        while(true) {
+            ArrayList<String> commandStrings = new ArrayList<>();
+
+            Scanner scanner = new Scanner(System.in);
+            String commands = scanner.nextLine();
+            commandStrings.addAll(Arrays.asList(commands.split(" ")));
+            
+            if(commandStrings.get(0).equals("exit")) {
+                System.exit(0);
             }
-        
+            
+            if(!commandStrings.get(0).equals("")) {
+                main.processCommand(commandStrings, main.commands);
+            }
+        }
     }
+    
 }
