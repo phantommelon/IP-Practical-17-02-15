@@ -16,21 +16,21 @@
  */
 
 /**
- * Write a description of class InvalidCommandException here.
+ * Exits the current running of the program.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version (a version number or a date)
+ * @version 1.0
  */
 
-class InvalidCommandException extends Exception {
+public class ExitCommand extends Command {
 
-    private Command previousCommand;
+    public ExitCommand() {
+        super("exit");
+    }
     
-    public InvalidCommandException(Command previousCommand) {
-        this.previousCommand = previousCommand;
+    @Override
+    public void execute() {
+        System.exit(0);
     }
 
-    public Command getPreviousCommand() {
-        return previousCommand;
-    }
 }

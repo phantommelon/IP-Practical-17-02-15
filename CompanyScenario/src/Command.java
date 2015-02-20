@@ -16,21 +16,29 @@
  */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Contains a command and it's help information.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.0
+ * @version 1.3
  */
 
 public class Command {
     
-    //All commands will be lower case.
     private String commandName;
     private Map<String, Command> subCommands = new HashMap<>();
+    
+    public Command() {
+        subCommands.put("exit", new ExitCommand());
+    }
     
     public Command(String commandName) {
         this.commandName = commandName;
@@ -41,19 +49,85 @@ public class Command {
         subCommands.put(subCommand.getName(), subCommand);
     }
     
-    public Command(String commandName, ArrayList<Command> subCommands) {
+    public Command(String commandName, List<Command> subCommands) {
         this.commandName = commandName;
         for(Command subCommand : subCommands) {
             this.subCommands.put(subCommand.getName(), subCommand);
         }
     }
     
-    public boolean isFinal() {
-        if(subCommands.isEmpty()) {
-            return true;
+    /**
+     * Given a List of Strings, executes the correct command (if valid).
+     * 
+     * @param userInput List of String objects representing Commands to be processed.
+     * @param commands A Map containing the current Command's subcommands.
+     * @throws InvalidCommandException 
+     */
+    private void processCommand(List<String> userInput, Map<String, Command> commands,
+            Command lastCommand) throws InvalidCommandException {
+        
+        Command command = commands.get(userInput.get(0));
+        
+        if(userInput.get(0).equals("help")) {
+            this.help();
+            return;
         }
+        
+        if(command == null) {
+            throw new InvalidCommandException(lastCommand);
+        }
+        
+        else if(userInput.size() == 1) {
+            command.execute();
+        }
+        
+        else if(userInput.size() == 2 && userInput.get(1).equals("help")) {
+            command.help();
+        }
+        
         else {
-            return false;
+            userInput.remove(0);
+            processCommand(userInput, command.getSubCommands(), command);
+        }
+        
+    }
+    
+    public static void main(String[] args) {
+        
+        Command console = new Command();
+        System.out.println("Company Scenario V1.0 - Please enter a valid command: \n");
+        
+        while(true) {
+            ArrayList<String> commandStrings = new ArrayList<>();
+
+            Scanner scanner = new Scanner(System.in);
+            String commands = scanner.nextLine();
+            commandStrings.addAll(Arrays.asList(commands.split(" ")));
+            
+            if(!commandStrings.get(0).equals("")) {
+                
+                try {
+                    console.processCommand(commandStrings, console.getSubCommands(),
+                            null);
+                } 
+                
+                catch (InvalidCommandException ex) {
+                    
+                    Command previousCommand = ex.getPreviousCommand();
+                    
+                    System.out.println("Unknown command: " + commandStrings.get(0));
+                    System.out.print("Valid commands are: ");
+                    
+                    if(previousCommand == null) {
+                        System.out.print(console.getSubCommands().keySet());
+                    }
+                    else {
+                        System.out.print(previousCommand.getSubCommands().keySet());
+                    }
+                    
+                    System.out.println("\n");
+                }
+            }
         }
     }
     
@@ -70,12 +144,17 @@ public class Command {
     }
 
     public void execute() {
-        if(!subCommands.isEmpty()) {
-            System.out.print(commandName + " has subcommands " + subCommands.keySet());
-            System.out.println();
-        }
-        else {
-            System.out.println("This command has not been implemented yet.");
-        }
+        this.help();
     }
+    
+    public void help() {
+        System.out.println("The valid commands are:");
+        
+        for(String thisCommandName : subCommands.keySet()) {
+            System.out.print(thisCommandName + " ");
+        }
+        
+        System.out.println();
+    }
+
 }
