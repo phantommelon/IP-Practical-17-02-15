@@ -16,12 +16,11 @@
  */
 
 /**
- * Write a description of class InvalidCommandException here.
+ * A custom exception thrown when user input does not match a command phrase.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version (a version number or a date)
+ * @version 1.1
  */
-
 class InvalidCommandException extends Exception {
 
     private Command previousCommand;

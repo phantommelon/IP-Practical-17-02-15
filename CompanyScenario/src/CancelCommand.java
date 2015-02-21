@@ -19,20 +19,36 @@ import java.util.List;
  */
 
 /**
- * Exits the current running of the program.
+ * This Command cancels what the user was doing and returns to the beginning of
+ * the command tree.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
  * @version 1.0
  */
-public class ExitCommand extends Command {
-
-    public ExitCommand() {
-        super("exit");
+public class CancelCommand extends Command {
+    
+    /** 
+     * Constructs a new CancelCommand object giving the superclass the name 
+     * cancel by default.
+     */
+    public CancelCommand() {
+        super("cancel");
     }
     
+    /**
+     * Performs the functionality of the CancelCommand.
+     * 
+     * @param company
+     * @param previousCommand
+     */
     @Override
     public void execute(Company company, List<Command> previousCommands) {
-        System.exit(0);
+        
+        //Start from i = 1 as not to break out of the last while loop (at the
+        //beginning of the program).
+        for(int i = 1; i < previousCommands.size(); i++) {
+            previousCommands.get(i).setLoop(false);
+        }
+        //revise decision to keep main and control processes in command. Move to class control?
     }
-
 }

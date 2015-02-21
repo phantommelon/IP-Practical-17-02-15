@@ -19,20 +19,24 @@ import java.util.List;
  */
 
 /**
- * Exits the current running of the program.
+ * Superclass for all Commands that add to the program.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
  * @version 1.0
  */
-public class ExitCommand extends Command {
-
-    public ExitCommand() {
-        super("exit");
+public class AddCommand extends Command {
+    
+    public AddCommand() {
+        super("add");
+        this.addSubCommand(new CancelCommand());
+        this.addSubCommand(new ExitCommand());
     }
     
     @Override
     public void execute(Company company, List<Command> previousCommands) {
-        System.exit(0);
+        System.out.println("Add what?");
+        System.out.println(this.getSubCommands().keySet());
+        this.getInput(this, company);
     }
-
+    
 }

@@ -21,29 +21,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Contains a command and it's help information.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.3
+ * @version 1.4
  */
-
 public class Command {
     
     private String commandName;
     private Map<String, Command> subCommands = new HashMap<>();
+    private List<Command> previousCommands = new ArrayList<>();
+    private boolean keepLooping = true;
     
     public Command() {
+        this.commandName = "main";
         subCommands.put("exit", new ExitCommand());
+        subCommands.put("add", new AddCommand());
     }
     
     public Command(String commandName) {
         this.commandName = commandName;
     }
     
+    //Don't think these are needed
     public Command(String commandName, Command subCommand) {
         this.commandName = commandName;
         subCommands.put(subCommand.getName(), subCommand);
@@ -61,45 +63,47 @@ public class Command {
      * 
      * @param userInput List of String objects representing Commands to be processed.
      * @param commands A Map containing the current Command's subcommands.
+     * @param lastCommand
+     * @param company
      * @throws InvalidCommandException 
      */
     private void processCommand(List<String> userInput, Map<String, Command> commands,
-            Command lastCommand) throws InvalidCommandException {
+            List<Command> previousCommands, Company company) throws InvalidCommandException {
         
         Command command = commands.get(userInput.get(0));
+        Command previousCommand = previousCommands.get(previousCommands.size() - 1);
         
+        //these specific cases are not needed
         if(userInput.get(0).equals("help")) {
             this.help();
             return;
         }
         
         if(command == null) {
-            throw new InvalidCommandException(lastCommand);
+            throw new InvalidCommandException(previousCommand);
         }
         
         else if(userInput.size() == 1) {
-            command.execute();
+            command.execute(company, previousCommands);
         }
         
+        //perhaps not needed if a HelpCommand is created
         else if(userInput.size() == 2 && userInput.get(1).equals("help")) {
             command.help();
         }
         
         else {
             userInput.remove(0);
-            processCommand(userInput, command.getSubCommands(), command);
+            processCommand(userInput, command.getSubCommands(), previousCommands, company);
         }
         
     }
     
-    public static void main(String[] args) {
-        
-        Command console = new Command();
-        System.out.println("Company Scenario V1.0 - Please enter a valid command: \n");
-        
-        while(true) {
+    public void getInput(Command command, Company company) {
+        while(keepLooping) {
             ArrayList<String> commandStrings = new ArrayList<>();
-
+            this.previousCommands.add(command);
+            
             Scanner scanner = new Scanner(System.in);
             String commands = scanner.nextLine();
             commandStrings.addAll(Arrays.asList(commands.split(" ")));
@@ -107,8 +111,8 @@ public class Command {
             if(!commandStrings.get(0).equals("")) {
                 
                 try {
-                    console.processCommand(commandStrings, console.getSubCommands(),
-                            null);
+                    command.processCommand(commandStrings, command.getSubCommands(),
+                            previousCommands, company);
                 } 
                 
                 catch (InvalidCommandException ex) {
@@ -117,22 +121,36 @@ public class Command {
                     
                     System.out.println("Unknown command: " + commandStrings.get(0));
                     System.out.print("Valid commands are: ");
-                    
-                    if(previousCommand == null) {
-                        System.out.print(console.getSubCommands().keySet());
-                    }
-                    else {
-                        System.out.print(previousCommand.getSubCommands().keySet());
-                    }
-                    
+                    System.out.print(previousCommand.getSubCommands().keySet());
                     System.out.println("\n");
                 }
             }
         }
     }
     
+    public static void main(String[] args) {
+        
+        Company company = new Company();
+        
+        Command console = new Command();
+        System.out.println("Company Scenario V1.0 - Please enter a valid command: \n");
+        
+        console.getInput(console, company);
+        
+    }
+    
+    /**
+     * Returns the Command to which the String input commandName is mapped,
+     * or null if the subCommands Map contains no mapping for commandName.
+     * @param commandName
+     * @return 
+     */
     public Command getCommand(String commandName) {
         return subCommands.get(commandName);
+    }
+    
+    public void addSubCommand(Command command) {
+        subCommands.put(command.getName(), command);
     }
     
     public String getName() {
@@ -141,10 +159,6 @@ public class Command {
     
     public Map<String, Command> getSubCommands() {
         return subCommands;
-    }
-
-    public void execute() {
-        this.help();
     }
     
     public void help() {
@@ -155,6 +169,14 @@ public class Command {
         }
         
         System.out.println();
+    }
+
+    public void execute(Company company, List<Command> previousCommands) {
+        this.help();
+    }
+    
+    public void setLoop(boolean state) {
+        this.keepLooping = state;
     }
 
 }
