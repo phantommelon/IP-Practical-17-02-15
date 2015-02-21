@@ -20,6 +20,10 @@
  * @author Alistair Madden <phantommelon@gmail.com>
  */
 
+import company.CommissionSalary;
+import company.Person;
+import company.ContractedWorker;
+import company.Company;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
