@@ -30,7 +30,7 @@ import java.util.Scanner;
  * Write a description of class Control here.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.0
+ * @version 1.2
  */
 public class Control {
     
@@ -52,8 +52,11 @@ public class Control {
             throw new InvalidCommandException(command);
         }
         
-        newCommand.addPreviousCommands(command.getPreviousCommands());
-        newCommand.addPreviousCommand(command);
+        //If newCommand hasn't already been traversed (by help for example)
+        if(newCommand.getPreviousCommands().isEmpty()) {
+            newCommand.addPreviousCommands(command.getPreviousCommands());
+            newCommand.addPreviousCommand(command);
+        }
         
         if(userInput.size() == 1) {
             newCommand.execute(company);
@@ -68,6 +71,8 @@ public class Control {
     
     public static void getInput(Command command, Company company) {
         while(command.getLoop()) {
+            System.out.print(command.getName() + "> ");
+            
             ArrayList<String> commandStrings = new ArrayList<>();
             
             Scanner scanner = new Scanner(System.in);
@@ -86,7 +91,8 @@ public class Control {
                     Command previousCommand = ex.getPreviousCommand();
                     
                     System.out.println("Unknown command: " + commandStrings.get(0));
-                    System.out.print("Valid commands are: ");
+                    System.out.print("Valid commands for " +
+                            previousCommand.getName() + " are: ");
                     System.out.print(previousCommand.getSubCommands().keySet());
                     System.out.println("\n");
                 }

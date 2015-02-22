@@ -17,16 +17,14 @@
 
 package commands;
 
-
 import company.Company;
 import control.Control;
-import java.util.List;
 
 /**
  * Superclass for all Commands that add to the program.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.1
+ * @version 1.2
  */
 public class AddCommand extends Command {
     
@@ -34,13 +32,26 @@ public class AddCommand extends Command {
         super("add");
         this.addSubCommand(new CancelCommand());
         this.addSubCommand(new ExitCommand());
+        this.addSubCommand(new HelpCommand());
     }
     
     @Override
     public void execute(Company company) {
+        this.setLoop(true);
+        
         System.out.println("Add what?");
         System.out.println(this.getSubCommands().keySet());
+        System.out.println();
+        
         Control.getInput(this, company);
     }
     
+    @Override
+    public void help() {
+        System.out.println("The add command can be used to add to the company.");
+        System.out.println("usage: add " + this.getSubCommands().keySet());
+        System.out.println("To find out more about any given command, type: ");
+        System.out.println("add [command] help");
+        System.out.println();
+    }
 }

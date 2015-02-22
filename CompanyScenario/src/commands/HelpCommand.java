@@ -20,20 +20,20 @@ package commands;
 import company.Company;
 
 /**
- * Exits the current running of the program.
+ * Write a description of class HelpCommand here.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.2
+ * @version 1.0
  */
-public class ExitCommand extends Command {
-
-    public ExitCommand() {
-        super("exit");
+public class HelpCommand extends Command {
+    public HelpCommand() {
+        super("help");
     }
     
     @Override
     public void execute(Company company) {
-        System.exit(0);
+        this.getPreviousCommand().help();
+        this.resetPreviousCommands();
     }
-
+    
 }

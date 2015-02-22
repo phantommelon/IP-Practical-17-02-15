@@ -17,7 +17,6 @@
 
 package commands;
 
-
 import company.Company;
 import java.util.List;
 
@@ -26,7 +25,7 @@ import java.util.List;
  * the command tree.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.0
+ * @version 1.1
  */
 public class CancelCommand extends Command {
     
@@ -36,6 +35,7 @@ public class CancelCommand extends Command {
      */
     public CancelCommand() {
         super("cancel");
+        this.addSubCommand(new HelpCommand());
     }
     
     /**
@@ -52,6 +52,12 @@ public class CancelCommand extends Command {
         for(int i = 1; i < previousCommands.size(); i++) {
             previousCommands.get(i).setLoop(false);
         }
+        System.out.println();
     }
     
+    @Override
+    public void help() {
+        System.out.println("Cancels the current action returning the program to"
+                + " the beginning." + "\n");
+    }
 }

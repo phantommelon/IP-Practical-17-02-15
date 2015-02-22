@@ -18,20 +18,17 @@
 package commands;
 
 
-import exceptions.InvalidCommandException;
 import company.Company;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 /**
  * Contains a command and it's help information.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.4
+ * @version 1.5
  */
 public class Command {
     
@@ -44,6 +41,7 @@ public class Command {
         this.commandName = "main";
         subCommands.put("exit", new ExitCommand());
         subCommands.put("add", new AddCommand());
+        subCommands.put("help", new HelpCommand());
     }
     
     public Command(String commandName) {
@@ -86,12 +84,9 @@ public class Command {
     }
     
     public void help() {
+        System.out.println("At command " + this.getName() + ".");
         System.out.println("The valid commands are:");
-        
-        for(String thisCommandName : subCommands.keySet()) {
-            System.out.print(thisCommandName + " ");
-        }
-        
+        System.out.println(this.getSubCommands().keySet());
         System.out.println();
     }
 
@@ -127,6 +122,10 @@ public class Command {
     
     public void addPreviousCommands(List<Command> previousCommands) {
         this.previousCommands.addAll(previousCommands);
+    }
+    
+    public void resetPreviousCommands() {
+        this.previousCommands.clear();
     }
 
 }
