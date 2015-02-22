@@ -18,41 +18,38 @@
 package commands;
 
 import company.Company;
-import control.Control;
 
 /**
- * Superclass for all Commands that add to the program.
+ * Steps the user back one Command.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.3
+ * @version 1.0
  */
-public class AddCommand extends Command {
+public class StepBackCommand extends Command {
     
-    public AddCommand() {
-        super("add");
-        this.addSubCommand(new CancelCommand());
-        this.addSubCommand(new ExitCommand());
+    /**
+     * Constructs a new StepBackCommand object giving the superclass the name
+     * stepback by default.
+     */
+    public StepBackCommand() {
+        super("stepback");
         this.addSubCommand(new HelpCommand());
-        this.addSubCommand(new StepBackCommand());
     }
     
+    /**
+     * Performs the functionality of the StepBack command.
+     * 
+     * @param company
+     */
     @Override
     public void execute(Company company) {
-        this.setLoop(true);
-        
-        System.out.println("Add what?");
-        System.out.println(this.getSubCommands().keySet());
+        this.getPreviousCommand().setLoop(false);
         System.out.println();
-        
-        Control.getInput(this, company);
     }
     
     @Override
     public void help() {
-        System.out.println("The add command can be used to add to the company.");
-        System.out.println("usage: add " + this.getSubCommands().keySet());
-        System.out.println("To find out more about any given command, type: ");
-        System.out.println("add [command] help");
-        System.out.println();
+        System.out.println("Cancels the current action and returns to the " +
+                "previous command. \n");
     }
 }

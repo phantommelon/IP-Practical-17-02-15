@@ -30,7 +30,7 @@ import java.util.Scanner;
  * Write a description of class Control here.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.2
+ * @version 1.3
  */
 public class Control {
     
@@ -39,8 +39,8 @@ public class Control {
      * 
      * @param userInput List of String objects representing Commands to be processed.
      * @param commands A Map containing the current Command's subcommands.
-     * @param command
-     * @param company
+     * @param command The Command that requested this method.
+     * @param company The Company to perform the Command on.
      * @throws InvalidCommandException 
      */
     public static void processCommand(List<String> userInput, Map<String, Command> commands,
@@ -64,7 +64,7 @@ public class Control {
         
         else {
             userInput.remove(0);
-            Control.processCommand(userInput, command.getSubCommands(), newCommand, company);
+            Control.processCommand(userInput, newCommand.getSubCommands(), newCommand, company);
         }
         
     }
