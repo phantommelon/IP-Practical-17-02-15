@@ -24,7 +24,7 @@ import control.Control;
  * Superclass for all Commands that add to the program.
  * 
  * @author Alistair Madden <phantommelon@gmail.com> 
- * @version 1.3
+ * @version 1.4
  */
 public class AddCommand extends Command {
     
@@ -34,6 +34,11 @@ public class AddCommand extends Command {
         this.addSubCommand(new ExitCommand());
         this.addSubCommand(new HelpCommand());
         this.addSubCommand(new StepBackCommand());
+        this.addSubCommand(new AddPersonCommand());
+    }
+    
+    public AddCommand(String name) {
+        super(name);
     }
     
     @Override
@@ -51,7 +56,8 @@ public class AddCommand extends Command {
     public void help() {
         System.out.println("The add command can be used to add to the company.");
         System.out.println("usage: add " + this.getSubCommands().keySet());
-        System.out.println("To find out more about any given command, type: ");
+        System.out.println("To find out more about any given command, from " +
+                "the main command type: ");
         System.out.println("add [command] help");
         System.out.println();
     }
